@@ -1,0 +1,9 @@
+@* Average rating, e.g. "★ 4.5". Screen readers hear "4.5 out of 5". *@
+<span class="inline-flex items-center gap-1 font-bold text-ocean-900">
+    <span class="text-coral-500" aria-hidden="true">★</span>
+    @Value.ToString("0.0")<span class="sr-only"> out of 5 average rating</span>
+</span>
+
+@code {
+    [Parameter, EditorRequired] public double Value { get; set; }
+}

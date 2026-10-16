@@ -1,7 +1,89 @@
-﻿@page "/"
+@page "/"
+@inject NavigationManager Navigation
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Argawanon · Discover Argao, Cebu</PageTitle>
 
-<h1>Hello, world!</h1>
+<section class="relative isolate overflow-hidden">
+    <img src="images/shore.jpg" alt="Calm blue sea at dusk on the Argao shore, framed by silhouetted branches."
+         class="absolute inset-0 -z-10 h-full w-full object-cover" />
+    <div class="absolute inset-0 -z-10 bg-gradient-to-r from-ocean-900/90 via-ocean-900/65 to-ocean-900/20"></div>
 
-Welcome to your new app.
+    <div class="container-page py-20 text-white sm:py-28 lg:py-36">
+        <p class="font-semibold uppercase tracking-widest text-sand-200">Argao, Cebu</p>
+        <h1 class="mt-3 max-w-2xl font-display text-4xl font-bold leading-tight sm:text-6xl">
+            Maayong pag-abot! Welcome to Argao.
+        </h1>
+        <p class="mt-5 max-w-xl text-lg leading-relaxed text-ocean-50">
+            Walk past coral-stone heritage buildings, warm up with a cup of thick sikwate, and end the day by the
+            calm waters of the Bohol Strait. Argawanon is your friendly guide to this southern Cebu town.
+        </p>
+
+        <form @onsubmit="Search" role="search" class="mt-8 flex max-w-xl flex-col gap-2 rounded-2xl bg-white p-2 shadow-xl sm:flex-row">
+            <label for="home-search" class="sr-only">Search destinations by name or location</label>
+            <input id="home-search" type="search" @bind="query" @bind:event="oninput"
+                   placeholder="Search a place or area, e.g. church or Poblacion"
+                   class="field flex-1 border-0" />
+            <button type="submit" class="btn-primary">Search</button>
+        </form>
+    </div>
+    <p class="absolute bottom-2 right-3 text-xs text-white/70">Photo: George Parrilla, Wikimedia Commons, CC BY 2.0</p>
+</section>
+
+<section aria-labelledby="categories-heading" class="container-page py-16">
+    <h2 id="categories-heading" class="heading text-3xl">What would you like to explore?</h2>
+    <p class="mt-2 text-stone-600">Pick a category to see places in Argao.</p>
+    <div class="mt-8 grid gap-6 sm:grid-cols-3">
+        @foreach (var c in categoryLinks)
+        {
+            <a href="explore?category=@c.Name" class="group relative isolate flex min-h-56 items-end overflow-hidden rounded-2xl p-6 text-white shadow-sm">
+                <img src="@c.Image" alt="" class="absolute inset-0 -z-10 h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                <div class="absolute inset-0 -z-10 bg-gradient-to-t from-ocean-900/90 via-ocean-900/40 to-transparent"></div>
+                <div>
+                    <h3 class="font-display text-2xl font-semibold">@c.Name</h3>
+                    <p class="mt-1 text-ocean-50">@c.Blurb</p>
+                </div>
+            </a>
+        }
+    </div>
+</section>
+
+<section aria-labelledby="featured-heading" class="bg-sand-100 py-16">
+    <div class="container-page">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+            <div>
+                <h2 id="featured-heading" class="heading text-3xl">Featured places</h2>
+                <p class="mt-2 text-stone-600">One favorite from each category to get you started.</p>
+            </div>
+            <a href="explore" class="btn-secondary">See all places</a>
+        </div>
+        <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            @foreach (var place in featured)
+            {
+                <PlaceCard Place="place" />
+            }
+        </div>
+    </div>
+</section>
+
+@code {
+    private string query = "";
+
+    private record CategoryLink(string Name, string Blurb, string Image);
+
+    private readonly CategoryLink[] categoryLinks =
+    [
+        new("Attractions", "Heritage church, town plaza and seaside views", "images/church.jpg"),
+        new("Food", "Sikwate, tablea and kinilaw (demo listings)", "images/sikwate.jpg"),
+        new("Stays", "Seaside and heritage stay ideas (demo listings)", "images/coastal-area.jpg"),
+    ];
+
+    // First place in each category.
+    private readonly IEnumerable<Place> featured =
+        Places.Categories.Select(c => Places.All.First(p => p.Category == c));
+
+    // Navigate inside the app (no full reload) so the visitor's reviews are kept.
+    private void Search() =>
+        Navigation.NavigateTo(string.IsNullOrWhiteSpace(query)
+            ? "explore"
+            : $"explore?q={Uri.EscapeDataString(query.Trim())}");
+}

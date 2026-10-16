@@ -1,0 +1,26 @@
+@inject ReviewStore Reviews
+
+@* The whole card is one link, so it works with a single Tab + Enter. *@
+<a href="places/@Place.Slug" class="card group flex h-full flex-col transition hover:-translate-y-1 hover:shadow-lg">
+    <div class="relative aspect-[4/3] overflow-hidden bg-sand-100">
+        <img src="@Place.Image" alt="@Place.ImageAlt" loading="lazy"
+             class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+        <span class="badge absolute left-3 top-3 bg-white/95">@Place.Category</span>
+    </div>
+    <div class="flex flex-1 flex-col gap-1 p-5">
+        <h3 class="heading text-xl group-hover:text-ocean-600">@Place.Name</h3>
+        <p class="text-sm text-stone-600">@Place.Location</p>
+        <p class="mt-2 text-stone-700">@Place.Summary</p>
+        <div class="mt-auto flex flex-wrap items-center justify-between gap-2 pt-4">
+            <Rating Value="Reviews.AverageRating(Place)" />
+            @if (Place.IsDemo)
+            {
+                <span class="demo-tag">Demo listing</span>
+            }
+        </div>
+    </div>
+</a>
+
+@code {
+    [Parameter, EditorRequired] public Place Place { get; set; } = default!;
+}
