@@ -1,3 +1,5 @@
+using MyBlazorApp.Models;
+
 namespace MyBlazorApp.Data;
 
 // Registered as Scoped: Blazor Server creates one instance per visitor connection (circuit).

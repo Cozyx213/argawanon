@@ -1,3 +1,5 @@
+using MyBlazorApp.Models;
+
 namespace MyBlazorApp.Data;
 
 // Read-only sample content. Nothing here changes while the app runs,

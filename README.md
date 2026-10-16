@@ -13,6 +13,7 @@ built with **.NET 8 Blazor** and **Tailwind CSS**.
 
 ## How it works
 
+- **Models:** `Models/Place.cs` and `Models/Review.cs` are read-only records; `Models/ReviewForm.cs` is the review form's model with validation rules.
 - **Data:** the places and sample reviews are a fixed list in `Data/Places.cs`. There's no database.
 - **Reviews:** `Data/ReviewStore.cs` keeps reviews in memory. It is registered as a *scoped* service, so each visitor
   gets their own copy. Reviews stay while you move between pages and disappear when you refresh.
@@ -39,7 +40,8 @@ Components/
   Layout/MainLayout    Header, footer (About section)
   Pages/               Home, Explore, PlaceDetails, Error
   Shared/              PlaceCard, Rating
-Data/                  Place records, place list, ReviewStore
+Models/                Place, Review (records), ReviewForm (form model)
+Data/                  Place list (Places.cs), ReviewStore
 Styles/app.css         Tailwind source (theme tokens and shared classes)
 wwwroot/               Compiled CSS and images
 ```

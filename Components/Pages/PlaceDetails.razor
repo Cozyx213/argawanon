@@ -1,5 +1,4 @@
 @page "/places/{Slug}"
-@using System.ComponentModel.DataAnnotations
 @inject ReviewStore Reviews
 
 @if (place is null)
@@ -119,21 +118,5 @@ else
         Reviews.Add(place!, new Review(form.Name!.Trim(), form.Rating!.Value, form.Comment!.Trim()));
         form = new(); // clears the form
         status = "Thanks! Your review was added.";
-    }
-
-    // [Required] also rejects text that is only spaces.
-    private class ReviewForm
-    {
-        [Required(ErrorMessage = "Please enter a display name.")]
-        [StringLength(40, ErrorMessage = "Display name can be at most 40 characters.")]
-        public string? Name { get; set; }
-
-        [Required(ErrorMessage = "Please choose a rating from 1 to 5.")]
-        [Range(1, 5, ErrorMessage = "Rating must be a whole number from 1 to 5.")]
-        public int? Rating { get; set; }
-
-        [Required(ErrorMessage = "Please write a comment.")]
-        [StringLength(500, ErrorMessage = "Comment can be at most 500 characters.")]
-        public string? Comment { get; set; }
     }
 }

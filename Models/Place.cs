@@ -1,7 +1,6 @@
-namespace MyBlazorApp.Data;
+namespace MyBlazorApp.Models;
 
-public record Review(string Name, int Rating, string Comment, bool IsSample = false);
-
+// A place listed on the site. A record is read-only, so the shared place list can't be changed by visitors.
 public record Place(
     string Slug,
     string Name,
