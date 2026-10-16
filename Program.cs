@@ -1,10 +1,14 @@
 using MyBlazorApp.Components;
+using MyBlazorApp.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+// One ReviewStore per visitor connection (in-memory, not shared, no browser storage).
+builder.Services.AddScoped<ReviewStore>();
 
 var app = builder.Build();
 
