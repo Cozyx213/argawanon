@@ -54,33 +54,19 @@ dotnet run             # http://localhost:5095
 - **No** `Co-Authored-By` or AI attribution lines. Keep commits clean.
 - `bin/`, `obj/` and `node_modules/` are git-ignored.
 
-## Current status (handoff)
+## Current status
 
-Done (one commit each):
-1. `build:` Tailwind replaces Bootstrap (tokens and shared classes)
-2. `feat:` Argao photos plus credits
-3. `feat:` `Data/Place.cs` (records), `Data/Places.cs` (9 listings, `Find(slug)`), `Data/ReviewStore.cs` (scoped, registered in `Program.cs`)
-4. `feat:` new layout (header nav, footer About, skip link), global InteractiveServer render mode; Counter/Weather/NavMenu removed
+All three pages are built and verified (2026-10-16):
 
-Remaining:
-1. **`Components/Shared/PlaceCard.razor`**: the whole card is a link to `places/{slug}`, with photo (`ImageAlt`), name, location,
-   category badge, `demo-tag` when `IsDemo`, and average rating from `ReviewStore.AverageRating`
-   (e.g. "★ 4.5" with `aria-label="Average rating 4.5 out of 5"`). Add `@using MyBlazorApp.Components.Shared` to `_Imports.razor`.
-2. **Home (`Components/Pages/Home.razor`)**: a large hero using `images/shore.jpg` with its credit, the Argawanon welcome to Argao,
-   and a destination search (label plus input) that calls `NavigationManager.NavigateTo($"explore?q={Uri.EscapeDataString(q)}")`
-   from `@onsubmit`. Show featured places (first place of each category) as PlaceCards, plus three category links to
-   `explore?category=Attractions|Food|Stays`.
-3. **Explore (`/explore`)**: `[SupplyParameterFromQuery] q` and `category` initialize the state in `OnParametersSet`.
-   Add a search input (name or location, case-insensitive, trimmed, filters while typing via `@bind:event="oninput"`) and category
-   buttons (All / Attractions / Food / Stays) with `aria-pressed`. Show a results count in an `aria-live` region and a grid of PlaceCards.
-   The empty state explains that nothing matched and offers a "Clear search and filters" button plus category suggestions.
-4. **Place Details (`/places/{Slug}`)**: `Places.Find(Slug)`. For an unknown slug, show a friendly "Place not found"
-   message with a link back to Explore. Otherwise show a large photo with credit, name, category, location, demo label, description,
-   average rating with review count, and the review list (label sample reviews "Sample review (fictional)" and visitor ones "Your review").
-   The review form is an `EditForm` with `DataAnnotationsValidator`, using a model with `[Required] string Name`
-   (`[StringLength(40)]`), `[Required, Range(1,5)] int? Rating` (an `InputSelect` with options 1–5), and `[Required] string Comment`
-   (`[StringLength(500)]`). `[Required]` already rejects whitespace-only text. On valid submit, call `ReviewStore.Add(place, new Review(name.Trim(), rating, comment.Trim()))`,
-   reset the form, and announce success in an `aria-live` region. The new review and the updated average appear immediately.
-5. Run `npm run css:build` and `dotnet build`, then verify in a browser: filtering, review validation, rating updates, navigation
-   (review kept after Home→Explore→back), full refresh resets reviews, and two separate browser windows don't share reviews.
-6. Update this status section when you're done.
+- Home: hero with welcome text, destination search (opens `/explore?q=...` with client-side navigation), category links, featured places.
+- Explore: search by name or location, category buttons (`aria-pressed`), live result count, empty state with "Clear search and filters".
+- Place Details: photo and credit, description, rating, sample and visitor reviews, a validated review form, and a not-found state for unknown slugs.
+- Browser checks with Playwright all passed: filtering, validation (blank and whitespace-only fields, integer 1–5),
+  average updates immediately, reviews kept across internal navigation, reset on refresh, two visitors isolated,
+  focus moves to the `h1` on navigation, focus ring visible, all images have alt text, no horizontal scroll at 390px wide, no console errors.
+
+Design: the owner decided to keep this site's design and recreate it in Figma (not the other way round).
+If a Figma file arrives later, change the `@theme` tokens and shared classes in `Styles/app.css` first.
+
+Accessibility note: there's no skip link on purpose. `FocusOnNavigate` (in `Routes.razor`) focuses each page's `h1`, and
+`href="#..."` links resolve against `<base href="/">`, so they would navigate to Home.
