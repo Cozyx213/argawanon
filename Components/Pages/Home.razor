@@ -68,7 +68,19 @@
 @code {
     private string query = "";
 
-    private record CategoryLink(string Name, string Blurb, string Image);
+    private class CategoryLink
+    {
+        public string Name { get; }
+        public string Blurb { get; }
+        public string Image { get; }
+
+        public CategoryLink(string name, string blurb, string image)
+        {
+            Name = name;
+            Blurb = blurb;
+            Image = image;
+        }
+    }
 
     private readonly CategoryLink[] categoryLinks =
     [

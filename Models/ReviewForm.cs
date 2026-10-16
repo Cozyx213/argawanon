@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MyBlazorApp.Models;
 
-// What the review form fills in. A class (not a record) because Blazor updates it as the visitor types.
+// What the review form fills in. Unlike Place and Review it has setters, because Blazor updates it as the visitor types.
 // [Required] also rejects text that is only spaces.
 public class ReviewForm
 {
