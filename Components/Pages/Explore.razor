@@ -1,0 +1,101 @@
+@page "/explore"
+
+<PageTitle>Explore · Argawanon</PageTitle>
+
+<section class="bg-ocean-50 pb-16 pt-12">
+    <div class="container-page">
+        <h1 class="heading text-4xl">Explore Argao</h1>
+        <p class="mt-2 max-w-2xl text-stone-600">
+            Heritage sights, local food and places to stay. Food and stay listings are fictional demos for this school project.
+        </p>
+    </div>
+</section>
+
+<div class="container-page">
+    <div class="card relative -mt-10 grid gap-5 p-5 sm:p-6 md:grid-cols-[1fr_auto] md:items-end">
+        <div>
+            <label for="explore-search" class="field-label">Search by name or location</label>
+            <input id="explore-search" type="search" class="field" placeholder="e.g. church, Poblacion, coastal"
+                   @bind="search" @bind:event="oninput" />
+        </div>
+        <fieldset>
+            <legend class="field-label">Category</legend>
+            <div class="flex flex-wrap gap-2">
+                @foreach (var option in categoryOptions)
+                {
+                    var selected = option == selectedCategory;
+                    <button type="button" aria-pressed="@(selected ? "true" : "false")" @onclick="() => selectedCategory = option"
+                            class="@(selected ? "bg-ocean-700 text-white" : "bg-sand-100 text-ocean-900 hover:bg-sand-200") rounded-full px-4 py-2 text-sm font-semibold transition">
+                        @(option ?? "All")
+                    </button>
+                }
+            </div>
+        </fieldset>
+    </div>
+
+    <section aria-labelledby="results-heading" class="mt-10">
+        <h2 id="results-heading" class="sr-only">Results</h2>
+        <p role="status" class="font-semibold text-stone-600">
+            @results.Count @(results.Count == 1 ? "place" : "places") found
+        </p>
+
+        @if (results.Count == 0)
+        {
+            <div class="card mt-6 p-10 text-center">
+                <p class="heading text-2xl">No places match your search</p>
+                <p class="mx-auto mt-2 max-w-md text-stone-600">
+                    Nothing matched
+                    @if (!string.IsNullOrWhiteSpace(search))
+                    {
+                        <strong>“@search.Trim()”</strong>
+                    }
+                    @if (selectedCategory is not null)
+                    {
+                        <span> in @selectedCategory</span>
+                    }.
+                    Try a shorter word, a location such as <em>Poblacion</em> or <em>Coastal</em>, or another category.
+                </p>
+                <button type="button" class="btn-primary mt-6" @onclick="ClearFilters">Clear search and filters</button>
+            </div>
+        }
+        else
+        {
+            <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                @foreach (var place in results)
+                {
+                    <PlaceCard Place="place" @key="place.Slug" />
+                }
+            </div>
+        }
+    </section>
+</div>
+
+@code {
+    // Values from the URL, e.g. /explore?q=church&category=Attractions
+    [SupplyParameterFromQuery(Name = "q")] public string? Query { get; set; }
+    [SupplyParameterFromQuery(Name = "category")] public string? CategoryFromUrl { get; set; }
+
+    private string search = "";
+    private string? selectedCategory; // null means "All"
+
+    private readonly string?[] categoryOptions = [null, .. Places.Categories];
+
+    protected override void OnParametersSet()
+    {
+        search = Query ?? "";
+        selectedCategory = Places.Categories.FirstOrDefault(c => c.Equals(CategoryFromUrl, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private List<Place> results => Places.All
+        .Where(p => selectedCategory is null || p.Category == selectedCategory)
+        .Where(p => string.IsNullOrWhiteSpace(search)
+                    || p.Name.Contains(search.Trim(), StringComparison.OrdinalIgnoreCase)
+                    || p.Location.Contains(search.Trim(), StringComparison.OrdinalIgnoreCase))
+        .ToList();
+
+    private void ClearFilters()
+    {
+        search = "";
+        selectedCategory = null;
+    }
+}
