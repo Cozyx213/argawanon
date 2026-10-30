@@ -14,10 +14,10 @@ public class Place
     public string ImageAlt { get; }
     public string PhotoCredit { get; }
     public bool IsDemo { get; }
-    public Review[] SampleReviews { get; }
+    public IReadOnlyList<Review> SampleReviews { get; }
 
     public Place(string slug, string name, string category, string location, string summary, string description,
-                 string image, string imageAlt, string photoCredit, bool isDemo, Review[] sampleReviews)
+                 string image, string imageAlt, string photoCredit, bool isDemo, IReadOnlyList<Review> sampleReviews)
     {
         Slug = slug;
         Name = name;

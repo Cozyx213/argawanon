@@ -6,7 +6,7 @@ namespace MyBlazorApp.Data;
 // so a static list is safe to share between visitors.
 public static class Places
 {
-    public static readonly string[] Categories = ["Attractions", "Food", "Stays"];
+    public static readonly IReadOnlyList<string> Categories = ["Attractions", "Food", "Stays"];
 
     public static Place? Find(string slug) =>
         All.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
