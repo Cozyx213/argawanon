@@ -19,5 +19,7 @@ public class ReviewStore
     public IEnumerable<Review> ReviewsFor(Place place) =>
         added.GetValueOrDefault(place.Slug, []).Concat(place.SampleReviews);
 
-    public double AverageRating(Place place) => ReviewsFor(place).Average(r => r.Rating);
+    // 0 when a place has no reviews yet (Average() throws on an empty list).
+    public double AverageRating(Place place) =>
+        ReviewsFor(place).Select(r => r.Rating).DefaultIfEmpty().Average();
 }
