@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
 @source "../Components";
 
 /* Design tokens: change these when the Figma design is ready.
