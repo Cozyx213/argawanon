@@ -29,4 +29,3 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
 app.Run();
-// hospitality - tourism
